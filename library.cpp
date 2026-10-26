@@ -35,6 +35,7 @@ typedef unsigned long long ull;
 #define rev(v) reverse(v.begin(), v.end())
 #define sort_desc(v) sort(v.begin(), v.end(), greater<decltype(v[0])>())
 ll INF=2e18;
+const ll MOD = 1000000007LL;
 //繰り返し2乗法
 ll modpow(ll a,ll b,ll mod){
     ll ans=1;
@@ -125,3 +126,44 @@ int main() {
 }
 
 */
+
+// a^b mod MOD
+ll modpow(ll a, ll b) {
+    ll res = 1;
+
+    while (b > 0) {
+        if (b & 1) {
+            res = res * a % MOD;
+        }
+
+        a = a * a % MOD;
+        b >>= 1;
+    }
+
+    return res;
+}
+
+//nCrの計算ライブラリ
+vector<ll> fact, invfact;
+// 前計算：最大 N までの nCr に対応
+void init_nCr(ll N) {
+    fact.assign(N + 1, 1);
+    invfact.assign(N + 1, 1);
+
+    for (ll i = 1; i <= N; i++) {
+        fact[i] = fact[i - 1] * i % MOD;
+    }
+
+    invfact[N] = modpow(fact[N], MOD - 2);
+
+    for (ll i = N; i >= 1; i--) {
+        invfact[i - 1] = invfact[i] * i % MOD;
+    }
+}
+ll nCr(ll n, ll r) {
+    if (n < 0 || r < 0 || r > n) return 0;
+
+    return fact[n] * invfact[r] % MOD
+                 * invfact[n - r] % MOD;
+}
+//ここまで
