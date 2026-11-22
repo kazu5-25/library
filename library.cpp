@@ -256,3 +256,26 @@ int main() {
 }
 
 */
+//素因数の個数ライブラリ(N<=10^12)
+//※約数の個数ライブラリの factorize を利用するので、その後ろに置くこと
+//異なる素因数の個数 例: 12=2^2*3 → 2
+ll count_distinct_primes(ll n) {
+    return (ll)factorize(n).size();
+}
+//重複を含めた素因数の個数 例: 12=2^2*3 → 3
+ll count_prime_factors(ll n) {
+    ll res = 0;
+    for (auto [p, e] : factorize(n)) res += e;
+    return res;
+}
+/*↑使用例
+
+int main() {
+    ll n;
+    cin >> n;
+    cout << count_distinct_primes(n) << '\n';//異なる素因数の個数
+    cout << count_prime_factors(n) << '\n';//重複を含む個数
+    return 0;
+}
+
+*/
