@@ -212,3 +212,47 @@ int main() {
 
 */
 //ここまで
+//素数判定(Miller-Rabin法・決定的版) 1回 O(log n)
+//n<2^63 の範囲で正確。init_divisors() などの前処理は不要
+//※既存の modpow は ll 同士の積でオーバーフローするため、__int128 版を別名で用意
+ll modpow128(ll a, ll b, ll mod) {
+    ll res = 1;
+    a %= mod;
+    while (b > 0) {
+        if (b & 1) res = (__int128)res * a % mod;
+        a = (__int128)a * a % mod;
+        b >>= 1;
+    }
+    return res;
+}
+bool is_prime(ll n) {
+    if (n < 2) return false;
+    for (ll p : {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37}) {
+        if (n == p) return true;
+        if (n % p == 0) return false;
+    }
+    ll d = n - 1;
+    int s = 0;
+    while (d % 2 == 0) { d /= 2; s++; }//n-1 = d * 2^s
+    for (ll a : {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37}) {
+        ll x = modpow128(a, d, n);
+        if (x == 1 || x == n - 1) continue;
+        bool comp = true;
+        for (int r = 1; r < s; r++) {
+            x = (__int128)x * x % n;
+            if (x == n - 1) { comp = false; break; }
+        }
+        if (comp) return false;//合成数と確定
+    }
+    return true;
+}
+/*↑使用例
+
+int main() {
+    ll n;
+    cin >> n;
+    if (is_prime(n)) Yes; else No;
+    return 0;
+}
+
+*/
